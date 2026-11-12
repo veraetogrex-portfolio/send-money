@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T20 Send Money — slide, the coin flies to a friend, the receipt prints</title>
+<link rel="stylesheet" href="_shared/nocturne.css">
+<link rel="stylesheet" href="../style.css">
+<style>
+  /* the component from source/, dressed in Nocturne type */
+  #stage{background:radial-gradient(ellipse 65% 60% at 50% 45%,#0E1018 0%,var(--void) 72%);
+    --font:var(--f-text);--mono:var(--f-mono);--display:var(--f-display)}
+  #stage .tx{position:absolute;left:130px;top:80px;zoom:1;z-index:1}
+  .halo{position:absolute;left:50%;top:44%;width:1300px;height:700px;margin:-350px 0 0 -650px;border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(closest-side,rgba(0,0,0,0),rgba(0,0,0,0))}
+  #stage .tx{left:360px;top:88px}
+  #stage{background:var(--page)}
+  #stage.grid::before{opacity:.12}
+  .status-line{color:var(--text-3)}
+</style>
+</head>
+<body>
+<div id="stage" class="grid" data-title="T20 Send Money" data-url="veraetogrex-portfolio.github.io/send-money">
+  <div class="halo"></div>
+  <section class="tx" id="send" aria-label="Send money to a friend">
+    <div class="tx-flood"></div>
+    <header class="tx-head">
+      <span class="tx-back"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Send</span>
+      <span class="tx-bal"><small>Balance</small><b>$2,480.00</b></span>
+    </header>
+
+    <div class="tx-friend">
+      <div class="tx-ava"><svg viewBox="0 0 132 132" aria-hidden="true"><circle class="rail" cx="66" cy="66" r="62"/><circle class="ring" cx="66" cy="66" r="62"/></svg><span class="face">L</span></div>
+      <p class="tx-name">Lena Park</p>
+      <p class="tx-handle">@lena · ···· 4821</p>
+    </div>
+    <p class="tx-bubble">Got it, thank you! 🙌</p>
+
+    <p class="tx-amt"><sup>$</sup>120</p>
+    <p class="tx-note">🍜 Dinner at Nori</p>
+
+    <div class="tx-slide" role="slider" aria-label="Slide to send" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+      <span class="tx-fill"></span>
+      <span class="tx-label">Slide to send $120</span>
+      <span class="tx-thumb"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+    </div>
+
+    <div class="tx-print">
+      <div class="tx-paper">
+        <h1>Vector · transfer</h1>
+        <div class="big">$120.00</div>
+        <p><span>To</span>Lena Park</p>
+        <p><span>For</span>Dinner at Nori</p>
+        <p><span>Fee</span>$0.00</p>
+        <p><span>When</span>08 Nov · 21:40</p>
+        <div class="tx-bars"></div>
+        <span class="tx-stamp">Sent</span>
+      </div>
+    </div>
+  </section>
+  <div class="status-line"><span>Veraetogrex · T20</span><span>Wallet · send to a friend</span></div>
+</div>
+<script>window.AUTOPLAY = true;</script>
+<script src="_shared/stage.js"></script>
+<script src="../script.js"></script>
+<script>
+document.body.classList.add('th-' + (new URLSearchParams(location.search).get('theme') || 'graphite'));
+const tx = document.querySelector('#send').send;
+Stage.init({
+  reset: () => tx.reset(),
+  cursorStart: [470, 760],                 // right under the slider thumb
+  async demo(s) {
+    const t0 = performance.now();
+    const r = s.rect(tx.thumb);
+    await s.drag([r.cx + 560, r.cy], 900, { from: tx.thumb, fromMs: 220, pre: 120, post: 40, ease: s.ease.inOut });   // slide to send
+    s.cursor.hide();
+    await s.until(t0, 5300);
+    tx.rewind();                           // dissolve back to the first frame
+    await s.until(t0, 6000);
+  },
+});
+</script>
+</body>
+</html>
